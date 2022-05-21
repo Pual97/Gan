@@ -1,73 +1,29 @@
-/**
- learn to use net/http
- */
-//package main
-//
-//import (
-//	"fmt"
-//	"log"
-//	"net/http"
-//)
-//
-//func main() {
-//	http.HandleFunc("/", indexHandler)
-//	http.HandleFunc("/hello", helloHandler)
-//	log.Fatal(http.ListenAndServe(":9999", nil))
-//}
-//
-//func helloHandler(writer http.ResponseWriter, request *http.Request) {
-//	for k, v := range request.Header {
-//		fmt.Fprintf(writer, "Header[%q] = %q\n", k, v)
-//	}
-//}
-//
-//func indexHandler(writer http.ResponseWriter, request *http.Request) {
-//	fmt.Fprintf(writer, "URL.Path = %q\n", request.URL.Path)
-//}
-
-/**
-  custom define http handle
-*/
-//package main
-
-//type Engine struct{}
-//
-//func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-//	switch req.URL.Path {
-//	case "/":
-//		fmt.Fprintf(w, "URL.PATH = %q, HOST = %q, REMOTE_ADDR = %q\n", req.URL.Path, req.Host, req.RemoteAddr)
-//	case "/hello":
-//		for k, v := range req.Header {
-//			fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
-//		}
-//	default:
-//		fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
-//
-//	}
-//}
-//
-//func main() {
-//	engine := new(Engine)
-//	log.Fatal(http.ListenAndServe(":9999", engine))
-//}
-
 package main
 
 import (
-	"fmt"
+	"gan/Context"
 	"gan/HttpBase"
-	"net/http"
+	"log"
+	"os"
+	"time"
 )
 
 func main() {
-	r := HttpBase.New()
-	r.GET("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
-	})
-	r.GET("/hello",func (writer http.ResponseWriter, request *http.Request) {
-		for k, v := range request.Header {
-			fmt.Fprintf(writer, "Header[%q] = %q\n", k, v)
-		}
-	})
-	r.Run(":9999")
+	name := os.Args[1]
+	log.Printf("========================================================\n")
+	log.Printf("|  server Info:\n")
+	log.Printf("|  Server Name: %s\n", name)
+	log.Printf("|  Time: %s\n", time.Now().Format("2003-01-20 15:04:05"))
+	log.Printf("|  VERSION: %s\n", name+"-1.0.0")
+	log.Printf("========================================================\n")
+	switch name {
+	case "http-base":
+		HttpBase.Run()
+		return
+	case "context":
+		Context.Run()
+	default:
+		log.Println("invalid server args")
+		os.Exit(1)
+	}
 }
